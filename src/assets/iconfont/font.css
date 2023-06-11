@@ -1,6 +1,20 @@
 @font-face {
-    font-family: Alimama_DongFangDaKai_Regular;
-    src: url("./Alimama_DongFangDaKai_Regular.ttf");
-    font-weight: normal;
-    font-style: normal;
+    font-family: "阿里妈妈东方大楷 Regular";
+    font-weight: 400;
+    src: url("./Alimama_DongFangDaKai_Regular.woff") format(".woff"),
+    url("./Alimama_DongFangDaKai_Regular.woff2") format(".woff2"),
+    url("./Alimama_DongFangDaKai_Regular.ttf");
+    /*url("./Alimama_DongFangDaKai_Regular.otf");*/
+    font-display: swap;
+
+}
+
+@font-face {
+    font-family: "阿里妈妈数黑体 Bold";
+    font-weight: 700;
+    src: url("./AlimamaShuHeiTi-Bold.woff") format(".woff"),
+    url("./AlimamaShuHeiTi-Bold.woff2") format(".woff2"),
+    url("./AlimamaShuHeiTi-Bold.ttf");
+    /*url("./AlimamaShuHeiTi-Bold.otf");*/
+    font-display: swap;
 }

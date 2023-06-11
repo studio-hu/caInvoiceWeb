@@ -6,10 +6,10 @@ import {Button, Form, Input, message} from 'antd';
 import {login} from "../../utils/api"
 import {useEffect, useState} from "react";
 import ScrollReveal from 'scrollreveal'
+import {useNavigate} from "react-router-dom";
 
 
 function Login() {
-    const [loading, setLoading] = useState<boolean>(false);
     useEffect(() => {
         ScrollReveal().reveal(`.${styles.shape}`, {
             // 动画开始的方向
@@ -52,6 +52,8 @@ function Login() {
             opacity: 0,
         })
     }, [])
+    const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
     const onFinish = async (values: any) => {
         setLoading(v => !v)
         let {userName, password} = values
@@ -65,8 +67,11 @@ function Login() {
             let msg = res.data.data.msg
 
             if (code === 200) {
+                let token=res.data.data.token
+                sessionStorage.setItem("token",token)
                 setLoading(v => !v)
                 message.success(msg)
+                setTimeout(() => navigate("/"), 300)
             } else {
                 setLoading(v => !v)
                 message.error(msg)

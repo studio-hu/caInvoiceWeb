@@ -6,8 +6,6 @@ import {Button, Form, Input, message, Space} from 'antd';
 import {checkVerificationCode, getEmailCode, register} from "../../utils/api"
 import {useEffect, useState} from "react";
 import ScrollReveal from 'scrollreveal'
-// import {Simulate} from "react-dom/test-utils";
-// import error = Simulate.error;
 
 
 function Register() {
@@ -85,12 +83,11 @@ function Register() {
                 message.success("验证码发送成功")
                 sessionStorage.setItem('countdown', "10");
                 setCountdown(60)
-                // let code: string = result.data.data
-                // setCode(code)
             }
             console.log(result)
         }).catch(error => {
             console.log('error', error)
+            message.error("验证码发送失败")
             setcodeLoading(false)
         })
     }
@@ -107,7 +104,7 @@ function Register() {
             let res = await register({
                 studentId, userName, password, email
             })
-            console.log("res", res)
+            // console.log("res", res)
             let code = res.data.code;
             let msg = res.data.data.msg
             if (code === 200) {
