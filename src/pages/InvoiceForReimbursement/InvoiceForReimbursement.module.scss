@@ -1,0 +1,44 @@
+.inMiddle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .content {
+    width: 1000px;
+    height: 700px;
+    position: relative;
+    //background-color: #ffffff;
+
+    .title {
+      font-size: 28px;
+      font-family: "阿里妈妈数黑体 Bold", serif;
+      height: 100px;
+      line-height: 100px;
+      padding: 0 20px;
+    }
+
+    .btn {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      font-family: "阿里妈妈数黑体 Bold", serif;
+    }
+
+    .form {
+      height: 500px;
+      border-radius: 10px;
+      background-color: #ffffff;
+      padding: 30px;
+      //display: flex;
+      .input {
+        width: 100%;
+      }
+    }
+  }
+}

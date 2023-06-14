@@ -1,8 +1,10 @@
 import styles from "./Menu.module.scss"
 import {AccountBookFilled,CalendarFilled} from "@ant-design/icons"
 import {message} from "antd";
+import {useNavigate} from "react-router-dom";
 
 function Menu() {
+    const navigate = useNavigate();
     const developing=():void=>{
         message.warning("此模块开发中...")
     }
@@ -11,7 +13,7 @@ function Menu() {
                 <div className={styles.content}>
                     <h1 className={styles.title}>菜单</h1>
                     <div className={styles.menu}>
-                        <div className={styles.menuItem}>
+                        <div className={styles.menuItem} onClick={()=>navigate("/InvoiceForReimbursement")}>
                             <div className={styles.itemImg}>
                                 <div className={styles.itemImgInside}>
                                     <AccountBookFilled />
@@ -19,7 +21,7 @@ function Menu() {
                             </div>
                             <div className={styles.detail}>
                                 <div className={styles.detailTitle}>发票报销</div>
-                                <div className={styles.detailDesc}>电子产品、办公用品、活动支出、滴滴打出等</div>
+                                <div className={styles.detailDesc}>电子产品、办公用品、活动支出、滴滴打车等</div>
                             </div>
                         </div>
                         <div className={styles.menuItem} onClick={developing}>

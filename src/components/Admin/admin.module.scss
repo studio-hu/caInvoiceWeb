@@ -1,0 +1,108 @@
+//$bg:#F5F7FE;
+$bg:#F5F5F5;
+.layout {
+  min-height: 100vh;
+
+
+  .header {
+    //style={{ display: 'flex', alignItems: 'center' }}
+    z-index: 1;
+    width: 100%;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    box-shadow: 0 5px 7px -3px rgba(0, 0, 0, 0.1);
+    padding: 0 100px;
+    .left{
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      .logo{
+        width: 60px;
+        height: 60px;
+        margin: 0;
+      }
+      .title{
+        font-size: 26px;
+        color: #383838;
+        font-family: "阿里妈妈数黑体 Bold", serif;
+      }
+    }
+    .avatar{
+      display: flex;
+      align-items: center;
+      .avatarItem{
+        margin: 0 6px;
+        .icon{
+          font-size: 16px;
+          color: #696969;
+        }
+        .avatarItemText{
+          margin: 0 6px;
+        }
+      }
+
+
+    }
+
+    .logo {
+      height: 32px;
+      margin: 16px;
+      background: rgba(255, 255, 255, .2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 15px;
+      font-family: "阿里妈妈数黑体 Bold", serif;
+    }
+  }
+
+  .layout2 {
+    //background-color: #223ea2 !important;
+    .sider {
+      width: 200px;
+      height: 100%;
+      //padding: 0 10px;
+      padding-left: 20px;
+      background-color: $bg;
+      .title{
+        margin: 20px 0;
+        width: 100%;
+        height: 50px;
+        //background-color: #2A61FF;
+      }
+
+      .menu {
+        background-color: $bg;
+        //height: 100%;
+        border-right: 0;
+      }
+
+
+    }
+    .layout3{
+      //padding: 24px 24px 0 0;
+      padding: 24px;
+      background-color: $bg;
+      //border-radius: 10px;
+      //overflow: hidden;
+      .footer {
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #bbbbbb;
+        background-color: $bg;
+      }
+    }
+  }
+
+
+}
+
+
+

@@ -6,6 +6,7 @@ import {Button, Form, Input, message, Space} from 'antd';
 import {checkVerificationCode, getEmailCode, register} from "../../utils/api"
 import {useEffect, useState} from "react";
 import ScrollReveal from 'scrollreveal'
+import {useNavigate} from "react-router-dom";
 
 
 function Register() {
@@ -54,6 +55,7 @@ function Register() {
     const [loading, setLoading] = useState<boolean>(false);
     const [codeLoading, setcodeLoading] = useState<boolean>(false);
     const [form] = Form.useForm()
+    const navigate = useNavigate();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const [countdown, setCountdown] = useState<number>(parseInt(sessionStorage.getItem('countdown')) || 0);
@@ -76,12 +78,11 @@ function Register() {
         Promise.all([pending]).then(async res => {
             setcodeLoading(v => !v)
             let email: string = res[0].email
-            let result = await getEmailCode(email)
-            let {code} = result.data
+            let result:any = await getEmailCode(email)
+            let code = result.code
             if (code === 200) {
                 setcodeLoading(v => !v)
                 message.success("验证码发送成功")
-                sessionStorage.setItem('countdown', "10");
                 setCountdown(60)
             }
             console.log(result)
@@ -95,21 +96,22 @@ function Register() {
         setLoading(v => !v)
         let {email, password, studentId, userName, verificationCode} = values
         try {
-            let status = await checkVerificationCode({code: verificationCode, email})
-            if (status.data.code !== 200) {
+            let status:any = await checkVerificationCode({code: verificationCode, email})
+            if (status.code !== 200) {
                 setLoading(v => !v)
-                message.error(status.data.message)
+                message.error(status.message)
                 return;
             }
-            let res = await register({
+            let res:any = await register({
                 studentId, userName, password, email
             })
             // console.log("res", res)
-            let code = res.data.code;
-            let msg = res.data.data.msg
+            let code = res.code;
+            let msg = res.data.msg
             if (code === 200) {
                 setLoading(v => !v)
                 message.success(msg)
+                navigate('/login')
             } else {
                 setLoading(v => !v)
                 message.error(msg)

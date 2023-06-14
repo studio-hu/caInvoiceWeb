@@ -6,7 +6,9 @@ import {Button, Form, Input, message} from 'antd';
 import {login} from "../../utils/api"
 import {useEffect, useState} from "react";
 import ScrollReveal from 'scrollreveal'
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {setToken, setUserName} from "../../store/userSlice.ts";
 
 
 function Login() {
@@ -53,25 +55,31 @@ function Login() {
         })
     }, [])
     const [loading, setLoading] = useState<boolean>(false);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.preLocation || "/"
     const onFinish = async (values: any) => {
         setLoading(v => !v)
         let {userName, password} = values
         try {
-            let res = await login({
+            let res:any = await login({
                 userName,
                 password
             })
             console.log("res", res)
-            let code = res.data.code;
-            let msg = res.data.data.msg
+            let code = res.code;
+            let msg = res.data.msg
 
             if (code === 200) {
-                let token=res.data.data.token
-                sessionStorage.setItem("token",token)
+                let token = res.data.token
+                localStorage.setItem("token", token)
+                localStorage.setItem("username", userName)
+                dispatch(setToken(token))
+                dispatch(setUserName(userName))
                 setLoading(v => !v)
                 message.success(msg)
-                setTimeout(() => navigate("/"), 300)
+                setTimeout(() => navigate(from, {replace: true}), 300)
             } else {
                 setLoading(v => !v)
                 message.error(msg)

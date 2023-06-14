@@ -29,10 +29,15 @@ $height: 64px;
   .avatar{
     display: flex;
     align-items: center;
-
-    .icon{
-      font-size: 18px;
-      color: #696969;
+    .avatarItem{
+      margin: 0 6px;
+      .icon{
+        font-size: 16px;
+        color: #696969;
+      }
+      .avatarItemText{
+        margin: 0 6px;
+      }
     }
   }
 }
