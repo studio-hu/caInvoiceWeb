@@ -11,15 +11,33 @@ import {Avatar, Badge, Layout, Menu, Popover} from 'antd';
 import styles from "./admin.module.scss"
 import "./index.css"
 import logo from "../../assets/image/calogo.png";
-import {Outlet, useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
 
 const {Header, Sider, Content, Footer} = Layout;
 
 
 function Admin() {
-    const [openKeys, setOpenKeys] = useState<Array<string|undefined>>([]);
+    const [openKeys, setOpenKeys] = useState<Array<string | undefined>>([]);
     const navigate = useNavigate();
+    const location = useLocation();
+    useEffect(() => {
+        defaultOpenKeys()
+    }, []);
+    
+    const defaultOpenKeys: string[] | any = () => {
+        let path: string = location.pathname
+        switch (path) {
+            case '/admin/invoiceAll':
+            case '/admin/invoiceReview':
+                setOpenKeys(['invoice'])
+                break
+            case '/admin/tagUser':
+            case '/admin/tagInvoice':
+                setOpenKeys(['tag'])
+                break
+        }
+    }
     const onOpenChange = (keys: Array<string>) => {
         const latestOpenKey = keys.find((key: string) => openKeys.indexOf(key) === -1);
         setOpenKeys([latestOpenKey])
@@ -61,10 +79,12 @@ function Admin() {
                         // @ts-ignore
                         openKeys={openKeys}
                         onOpenChange={onOpenChange}
+                        defaultSelectedKeys={[location.pathname]}
+                        // defaultOpenKeys={['invoice']}
                         className={styles.menu}
                         items={[
                             {
-                                key: 'home',
+                                key: '/admin',
                                 icon: <HomeFilled/>,
                                 label: '首页',
                                 onClick: () => navigate("/admin")
@@ -75,19 +95,19 @@ function Admin() {
                                 label: '发票管理',
                                 children: [
                                     {
-                                        key: 'invoiceAll',
+                                        key: '/admin/invoiceAll',
                                         label: '全部发票',
                                         onClick: () => navigate("invoiceAll")
                                     },
                                     {
-                                        key: 'invoiceReview',
+                                        key: '/admin/invoiceReview',
                                         label: '发票审核',
                                         onClick: () => navigate("invoiceReview")
                                     }
                                 ]
                             },
                             {
-                                key: 'user',
+                                key: '/admin/user',
                                 icon: <TeamOutlined/>,
                                 label: '用户管理',
                                 onClick: () => navigate("user")
@@ -98,12 +118,12 @@ function Admin() {
                                 label: '标签管理',
                                 children: [
                                     {
-                                        key: 'tagUser',
+                                        key: '/admin/tagUser',
                                         label: '用户',
                                         onClick: () => navigate("tagUser")
                                     },
                                     {
-                                        key: 'tagInvoice',
+                                        key: '/admin/tagInvoice',
                                         label: '发票',
                                         onClick: () => navigate("tagInvoice")
                                     }
