@@ -1,29 +1,65 @@
 import styles from "./InvoiceForReimbursement.module.scss";
-import {Button, Form, Input, Result, message, Select, Upload} from "antd";
-import {LeftOutlined, UploadOutlined} from "@ant-design/icons"
-import type {UploadFile} from 'antd/es/upload/interface';
+import {Button, Form, Input, Result, message, Select, Upload, Modal} from "antd";
+import {LeftOutlined, PlusOutlined} from "@ant-design/icons"
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {addInvoice, getUserInfo} from "../../utils/api";
+import {addInvoice, getUserInfo, uploadFile} from "../../utils/api";
 import {useSelector} from "react-redux";
+import type {RcFile, UploadProps} from 'antd/es/upload';
+import type {UploadFile} from 'antd/es/upload/interface';
 
 
 const {Option} = Select;
 const {TextArea} = Input
 const invoiceType = ["零食", "日用", "交通", "数码", "办公", "It服务", "其他"]
-// {
-//     uid: '-1',
-//         name: 'image.png',
-//     status: 'done',
-//     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-// },
+
+const getBase64 = (file: RcFile): Promise<string> =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+    });
 
 function InvoiceForReimbursement() {
     const [fileList, setFileList] = useState<UploadFile[]>([])
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
     const navigate = useNavigate();
     const {user}: any = useSelector(state => state)
+    const handleCancel = () => setPreviewOpen(false);
+    const handlePreview = async (file: UploadFile) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj as RcFile);
+        }
+        setPreviewImage(file.url || (file.preview as string));
+        setPreviewOpen(true);
+        setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+    };
+    const handleChange: UploadProps['onChange'] = ({fileList: newFileList}) =>
+        setFileList(newFileList);
+    const beforeUpload = (file: UploadFile): string | boolean => {
+        const MAX_SIZE: number = 5242880 as number
+        let size: number = file.size as number
+        if (size > MAX_SIZE) {
+            message.error("图片大小超过限制")
+            return Upload.LIST_IGNORE
+        }
+        return false
+    }
+    const uploadInvoiceImg = async (file: any) => {
+        let format = new FormData()
+        format.append("file", file)
+        let res: any = await uploadFile(format)
+        if (res.status !== "success") {
+            message.error("表单提交失败")
+            return ''
+        }
+        return res.filePath
+    }
     const onFinish = async (values: any) => {
         setLoading(true)
         try {
@@ -33,8 +69,14 @@ function InvoiceForReimbursement() {
                 setLoading(false)
                 return
             }
+            let imgUrl:string=await uploadInvoiceImg(values.fileList.file)
+            if(imgUrl===''){
+                message.error("出错了")
+                setLoading(false)
+                return
+            }
             let id: string = res.data.id
-            let result: any = await addInvoice({...values, userId: id})
+            let result: any = await addInvoice({...values, imgUrl,userId: id})
             if (result.code !== 200) {
                 message.error(result.message)
                 setLoading(false)
@@ -49,11 +91,6 @@ function InvoiceForReimbursement() {
             console.log(e)
         }
     };
-    const beforeUpload=(file)=>{
-        console.log(file)
-        return false;
-    }
-
     return (
         <>
             <div className={styles.container}>
@@ -109,18 +146,28 @@ function InvoiceForReimbursement() {
                                     </Form.Item>
                                     <Form.Item
                                         label="发票上传"
-                                        // name="amount"
-                                        // rules={[{ required: true}]}
+                                        extra={"注意：图片大小不能超过5MB"}
+                                        name="fileList"
+                                        rules={[{required: true, message: "请选择发票上传"}]}
                                     >
                                         <Upload
-                                            accept="image/png,image/png,image/jpeg"
-                                            maxCount={1}
-                                            listType="picture"
+                                            name="fileList"
+                                            listType="picture-card"
                                             fileList={fileList}
+                                            onPreview={handlePreview}
+                                            onChange={handleChange}
                                             beforeUpload={beforeUpload}
                                         >
-                                            <Button icon={<UploadOutlined/>}>发票上传</Button>
+                                            {fileList.length >= 1 ? null :
+                                                <div>
+                                                    <PlusOutlined/>
+                                                    <div style={{marginTop: 8}}>
+                                                        发票上传
+                                                    </div>
+                                                </div>
+                                            }
                                         </Upload>
+
                                     </Form.Item>
                                     <Form.Item
                                         label="发票用途"
@@ -144,7 +191,14 @@ function InvoiceForReimbursement() {
                     }
                 </div>
             </div>
-
+            <Modal open={previewOpen} title={previewTitle}
+                   footer={null} onCancel={handleCancel}
+                   width={1000}
+            >
+                <img alt="图片预览" style={{width: '100%'}}
+                     src={previewImage}
+                />
+            </Modal>
         </>
 
     );

@@ -100,3 +100,12 @@ export const addInvoice = (data: {
 }) => {
     return request.post(`/bill`, data)
 }
+/**
+ * 文件上传
+ * @param file 文件
+ */
+export const uploadFile = (file: any) => {
+    return request.post(`/oss/uploadFile`, file, {
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+}
