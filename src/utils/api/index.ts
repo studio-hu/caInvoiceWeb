@@ -46,6 +46,19 @@ export const checkVerificationCode = (data: { code: string, email: string }) => 
 export const getUserInfo = (username: string) => {
     return request.get(`/user/${username}`)
 }
+/**
+ * 更新用户信息
+ * @param data
+ */
+export const updateUserInfo = (data: {
+    id: string,
+    name: string,
+    phone: string,
+    studentId: string,
+    teamId: string
+}) => {
+    return request.put(`/user`, data)
+}
 
 /**
  * 获取所有组别
@@ -73,4 +86,17 @@ export const deleteTeam = (id: string) => {
  */
 export const updateTeam = (data: { id: string, teamName: string }) => {
     return request.put(`/team`, data)
+}
+/**
+ * 添加发票
+ * @param data 发票数据
+ */
+export const addInvoice = (data: {
+    description: string,
+    imgUrl: string,
+    amount: number,
+    type: string,
+    userId: string
+}) => {
+    return request.post(`/bill`, data)
 }

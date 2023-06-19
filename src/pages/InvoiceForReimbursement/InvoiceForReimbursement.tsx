@@ -1,147 +1,152 @@
 import styles from "./InvoiceForReimbursement.module.scss";
-import {Button, Form, Input, Modal, Select, Upload} from "antd";
-import {PlusOutlined, LeftOutlined} from "@ant-design/icons"
-import type {RcFile, UploadProps} from 'antd/es/upload';
+import {Button, Form, Input, Result, message, Select, Upload} from "antd";
+import {LeftOutlined, UploadOutlined} from "@ant-design/icons"
 import type {UploadFile} from 'antd/es/upload/interface';
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {addInvoice, getUserInfo} from "../../utils/api";
+import {useSelector} from "react-redux";
 
 
 const {Option} = Select;
 const {TextArea} = Input
+const invoiceType = ["零食", "日用", "交通", "数码", "办公", "It服务", "其他"]
 // {
 //     uid: '-1',
 //         name: 'image.png',
 //     status: 'done',
 //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 // },
-const getBase64 = (file: RcFile): Promise<string> =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
 
 function InvoiceForReimbursement() {
-    const [previewOpen, setPreviewOpen] = useState<boolean>(false);
-    const [previewImage, setPreviewImage] = useState('');
-    const [previewTitle, setPreviewTitle] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([])
+    const [loading, setLoading] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false);
     const navigate = useNavigate();
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
-    };
-    const handleCancel = () => setPreviewOpen(false);
-    const handleChange: UploadProps['onChange'] = ({fileList: newFileList}) => {
-        setFileList(newFileList);
-    }
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as RcFile);
+    const {user}: any = useSelector(state => state)
+    const onFinish = async (values: any) => {
+        setLoading(true)
+        try {
+            let res: any = await getUserInfo(user.username)
+            if (res.code !== 200) {
+                message.error("出错了")
+                setLoading(false)
+                return
+            }
+            let id: string = res.data.id
+            let result: any = await addInvoice({...values, userId: id})
+            if (result.code !== 200) {
+                message.error(result.message)
+                setLoading(false)
+                return
+            }
+            message.success(result.message)
+            setLoading(false)
+            setSuccess(true)
+        } catch (e) {
+            message.error("出错了")
+            setLoading(false)
+            console.log(e)
         }
-
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
-        setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
     };
+    const beforeUpload=(file)=>{
+        console.log(file)
+        return false;
+    }
 
-    // const handleChange = ({ fileList: newFileList }) =>{
-    //     setFileList(newFileList);
-    //     // console.log("value",value)
-    //     console.log(newFileList)
-    // }
-
-    // const onFinishFailed = (errorInfo: any) => {
-    //     console.log('Failed:', errorInfo);
-    // };
-    const uploadButton = (
-        <div>
-            <PlusOutlined/>
-            <div style={{marginTop: 8}}>Upload</div>
-        </div>
-    );
     return (
-        <div className={styles.container}>
-            <div className={styles.content}>
-                <h1 className={styles.title}>发票报销</h1>
-                <Button
-                    type={"text"}
-                    icon={<LeftOutlined/>}
-                    size={"large"}
-                    className={styles.btn}
-                    onClick={() => navigate(-1)}
-                >返回</Button>
-                <div className={styles.form}>
-                    <Form
-                        name="basic"
-                        labelCol={{span: 8}}
-                        wrapperCol={{span: 16}}
-                        style={{padding: 0, margin: 0, width: 800}}
-                        onFinish={onFinish}
-                    >
-                        <Form.Item
-                            label="发票类型"
-                            name="type"
-                            rules={[{required: true, message: '请选择发票类型'}]}
-                        >
-                            <Select>
-                                <Option value="a">办公用品</Option>
-                                <Option value="b">电子产品</Option>
-                                <Option value="d">打车</Option>
-                                <Option value="c">生活用品</Option>
-                                <Option value="s">其他</Option>
-                            </Select>
-                        </Form.Item>
+        <>
+            <div className={styles.container}>
+                <div className={styles.content}>
+                    <h1 className={styles.title}>发票报销</h1>
+                    <Button
+                        type={"text"}
+                        icon={<LeftOutlined/>}
+                        size={"large"}
+                        className={styles.btn}
+                        onClick={() => navigate(-1)}
+                    >返回</Button>
+                    {
+                        success ?
+                            <div className={styles.result}>
+                                <Result
+                                    status="success"
+                                    title="发票报销提交成功！"
+                                    subTitle="请耐心等待管理员审核"
+                                ></Result>
+                            </div> :
+                            <div className={styles.form}>
+                                <Form
+                                    labelCol={{span: 4}}
+                                    wrapperCol={{span: 18}}
+                                    // style={{padding: 0, margin: 0}}
+                                    onFinish={onFinish}
+                                >
+                                    <Form.Item
+                                        label="发票类型"
+                                        name="type"
+                                        rules={[{required: true, message: '请选择发票类型'}]}
+                                    >
+                                        <Select placeholder="-请选择-">
+                                            {
+                                                invoiceType.map((value, index) =>
+                                                    <Option key={index} value={value}>{value}</Option>)
+                                            }
+                                        </Select>
+                                    </Form.Item>
 
-                        <Form.Item
-                            label="发票金额"
-                            name="amount"
-                            rules={[{required: true, message: '请填写发票金额'}]}
-                        >
-                            <Input className={styles.input}/>
-                        </Form.Item>
-                        <Form.Item
-                            label="发票上传"
-                            // name="amount"
-                            // rules={[{ required: true}]}
-                        >
-                            {/*<Input className={styles.input} />*/}
-                            <Upload
-                                listType="picture-card"
-                                fileList={fileList}
-                                onPreview={handlePreview}
-                                onChange={handleChange}
-                            >
-                                {fileList.length >= 1 ? null : uploadButton}
-                            </Upload>
-                            <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                                <img alt="example" style={{width: '100%'}}
-                                     src={previewImage}
-                                />
-                            </Modal>
-                        </Form.Item>
-                        <Form.Item
-                            label="发票用途"
-                            name="description"
-                            rules={[{required: true, message: '请填写发票用途'}]}
-                        >
-                            <TextArea maxLength={200} showCount/>
-                        </Form.Item>
+                                    <Form.Item
+                                        label="发票金额"
+                                        name="amount"
+                                        rules={[
+                                            {required: true, message: '请填写发票金额'},
+                                            {pattern: /^[0-9]+(\.[0-9]{1,2})?$/, message: '请输入正确的金额'}
+                                        ]}
+                                    >
+                                        <Input
+                                            prefix="￥"
+                                            className={styles.input}/>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="发票上传"
+                                        // name="amount"
+                                        // rules={[{ required: true}]}
+                                    >
+                                        <Upload
+                                            accept="image/png,image/png,image/jpeg"
+                                            maxCount={1}
+                                            listType="picture"
+                                            fileList={fileList}
+                                            beforeUpload={beforeUpload}
+                                        >
+                                            <Button icon={<UploadOutlined/>}>发票上传</Button>
+                                        </Upload>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="发票用途"
+                                        name="description"
+                                        rules={[{required: true, message: '请填写发票用途'}]}
+                                    >
+                                        <TextArea maxLength={200} showCount/>
+                                    </Form.Item>
 
 
-                        <Form.Item wrapperCol={{offset: 8, span: 16}}>
-                            <Button type="default" style={{marginRight: 20}}>
-                                取消
-                            </Button>
-                            <Button type="primary" htmlType="submit">
-                                提交
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                                    <Form.Item wrapperCol={{offset: 4, span: 20}}>
+                                        <Button type="default" style={{marginRight: 20}}>
+                                            取消
+                                        </Button>
+                                        <Button type="primary" htmlType="submit" loading={loading}>
+                                            提交
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
+                            </div>
+                    }
                 </div>
             </div>
-        </div>
+
+        </>
+
     );
 }
 

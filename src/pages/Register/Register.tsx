@@ -111,6 +111,7 @@ function Register() {
             if (code === 200) {
                 setLoading(v => !v)
                 message.success(msg)
+                setCountdown(0)
                 navigate('/login')
             } else {
                 setLoading(v => !v)
@@ -150,15 +151,15 @@ function Register() {
                     wrapperCol={{span: 16}}
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name="studentId"
-                        rules={[{required: true, message: '请输入学号'}, {
-                            pattern: /^\d+$/,
-                            message: '请输入正确的学号'
-                        }]}
-                    >
-                        <Input className={styles.input} bordered={false} placeholder={"学号"}/>
-                    </Form.Item>
+                    {/*<Form.Item*/}
+                    {/*    name="studentId"*/}
+                    {/*    rules={[{required: true, message: '请输入学号'}, {*/}
+                    {/*        pattern: /^\d+$/,*/}
+                    {/*        message: '请输入正确的学号'*/}
+                    {/*    }]}*/}
+                    {/*>*/}
+                    {/*    <Input className={styles.input} bordered={false} placeholder={"学号"}/>*/}
+                    {/*</Form.Item>*/}
                     <Form.Item
                         name="userName"
                         rules={[{required: true, message: '请输入用户名'}]}

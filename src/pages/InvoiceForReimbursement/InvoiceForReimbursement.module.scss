@@ -9,9 +9,10 @@
   display: flex;
   justify-content: center;
 
+
   .content {
     width: 1000px;
-    height: 700px;
+    min-height: 700px;
     position: relative;
     //background-color: #ffffff;
 
@@ -31,7 +32,7 @@
     }
 
     .form {
-      height: 500px;
+      min-height: 500px;
       border-radius: 10px;
       background-color: #ffffff;
       padding: 30px;
@@ -39,6 +40,15 @@
       .input {
         width: 100%;
       }
+    }
+    .result{
+      min-height: 500px;
+      border-radius: 10px;
+      background-color: #ffffff;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

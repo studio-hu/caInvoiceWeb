@@ -1,9 +1,21 @@
 import axios from "axios";
 import config from "./config.ts";
+import JSONBig from "json-bigint";
+
 
 const instance = axios.create({
     baseURL: config.BASE_URL,
     timeout: config.TIMEOUT,
+    headers: {
+        "content-type": "application/json;charset=utf-8"
+    },
+    transformResponse: [function (data: any) {
+        const json = JSONBig({
+            storeAsString: true,
+            // storeAsString: false,
+        });
+        return json.parse(data);
+    }]
 });
 instance.interceptors.request.use(config => {
     const token = localStorage.getItem("token");
@@ -16,7 +28,11 @@ instance.interceptors.request.use(config => {
 })
 instance.interceptors.response.use(response => {
         // console.log("response", response)
-        // 后端返回数据的时候执行
+        if (response.data.code === 403) {
+            window.location.href="/login"
+            return
+        }
+        // // 后端返回数据的时候执行
         // res:是本次的响应对象
         // res.data：是后端给我们的真正数据
         //console.log("响应拦截器中的res", res);
