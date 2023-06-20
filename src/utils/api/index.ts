@@ -109,3 +109,11 @@ export const uploadFile = (file: any) => {
         headers: {'Content-Type': 'multipart/form-data'}
     })
 }
+/**
+ * 分页获取账单
+ * @param currentPage 当前页
+ * @param pageSize 每页显示的条数
+ */
+export const getInvoice=(currentPage:number,pageSize:number)=>{
+    return request.get(`/bill/${currentPage}/${pageSize}`)
+}
