@@ -2,6 +2,7 @@ import {lazy} from "react";
 import * as React from "react";
 import Loading from "../components/Loading/Loading.tsx";
 import NeedUserToken from "../components/NeedUserToken/NeedUserToken.tsx";
+import PendingReview from "../pages/adminPages/PendingReview/PendingReview.tsx";
 
 const Container = lazy(() => import("../components/Container/Container.tsx"))
 const Login = lazy(() => import("../pages/Login/Login.tsx"))
@@ -53,9 +54,9 @@ const routers: RoutersItems[] = [
         element: <Register/>
     },
     {
-        path:"/admin",
-        element:<Admin/>,
-        children:[
+        path: "/admin",
+        element: <Admin/>,
+        children: [
             {
                 index: true,
                 element: <Home/>
@@ -65,8 +66,17 @@ const routers: RoutersItems[] = [
                 element: <InvoiceAll/>
             },
             {
-              path: "InvoiceReview",
-              element: <InvoiceReview/>
+                path: "invoiceReview",
+                children: [
+                    {
+                        index: true,
+                        element: <InvoiceReview/>
+                    },
+                    {
+                        path:'pendingReview/:id',
+                        element:<PendingReview/>
+                    }
+                ]
             },
             {
                 path: "user",

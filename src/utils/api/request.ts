@@ -1,6 +1,7 @@
 import axios from "axios";
 import config from "./config.ts";
 import JSONBig from "json-bigint";
+// import {redirect} from "react-router-dom";
 
 
 const instance = axios.create({
@@ -29,8 +30,10 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(response => {
         // console.log("response", response)
         if (response.data.code === 403) {
-            window.location.href="/login"
+            window.location.replace("/login")
             return
+            // console.log("登录状态有问题")
+            // return redirect('/login')
         }
         // // 后端返回数据的时候执行
         // res:是本次的响应对象

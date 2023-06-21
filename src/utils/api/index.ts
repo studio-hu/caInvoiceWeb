@@ -114,6 +114,20 @@ export const uploadFile = (file: any) => {
  * @param currentPage 当前页
  * @param pageSize 每页显示的条数
  */
-export const getInvoice=(currentPage:number,pageSize:number)=>{
+export const getInvoice = (currentPage: number, pageSize: number) => {
     return request.get(`/bill/${currentPage}/${pageSize}`)
+}
+/**
+ * 获取待审核的账单
+ */
+export const getPendingInvoice = () => {
+    return request.get(`/bill/pendingReview`)
+}
+/**
+ * 分页获取用户
+ * @param currentPage 当前页
+ * @param pageSize 每页显示的条数
+ */
+export const getUser = (currentPage: number, pageSize: number) => {
+    return request.get(`/user/${currentPage}/${pageSize}`)
 }
