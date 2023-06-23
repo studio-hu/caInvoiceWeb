@@ -2,6 +2,7 @@ import {Button, Divider, message, Popover, Table, Tag, Typography} from "antd";
 import {ReloadOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
 import {getInvoice} from "../../../utils/api";
+import {useNavigate} from "react-router-dom";
 
 const {Column} = Table
 
@@ -23,7 +24,11 @@ interface IData {
     type: string,
     createTime: string,
     updateTime: string,
-    user: { userName: string }
+    name: string,
+    teamName: string,
+    phone: string,
+    email: string,
+    userName: string
 }
 
 function InvoiceList() {
@@ -33,6 +38,7 @@ function InvoiceList() {
         current: 1,
         pageSize: 10
     });
+    const navigate=useNavigate()
     useEffect(() => {
         getInvoiceList()
     }, [JSON.stringify(pagination)])
@@ -49,7 +55,7 @@ function InvoiceList() {
             setPagination({...pagination, total: res.data.total})
             setLoading(false)
             // message.success(res.messages)
-            // console.log(res)
+            console.log(res)
         } catch (e) {
             setLoading(false)
             message.error("出错了")
@@ -80,7 +86,7 @@ function InvoiceList() {
                 <Column title="编号" align="center" render={(_: any, _r: any, index: number): number => index + 1}/>
                 <Column title="发票用途" align="center" dataIndex="description" width={200} ellipsis/>
                 <Column title="发票金额" align="center" dataIndex="amount" render={value => `￥${value}`}/>
-                <Column title="提交人" align="center" dataIndex="user" render={value => value.userName}/>
+                <Column title="用户昵称" align="center" dataIndex="userName"/>
                 <Column title="状态" align="center" dataIndex="status" render={value =>
                     <Tag color={value === 0 ? "warning" : value === 1 ? "success" : "error"}>
                         {value === 0 ? "待审核" : value === 1 ? "审核通过" : "审核失败"}
@@ -90,7 +96,8 @@ function InvoiceList() {
                 <Column title="发票审核时间" align="center" dataIndex="updateTime"
                         render={(value: string, record: IData): string => record.status === 0 ? "-" : value}/>
                 <Column title="操作" align="center" dataIndex="id" width={200}
-                        render={() => <Button type="primary">查看详情</Button>}
+                        render={id => <Button type="primary"
+                                              onClick={() => navigate(`ReviewDetail/${id}`)}>查看详情</Button>}
                 />
             </Table>
         </div>

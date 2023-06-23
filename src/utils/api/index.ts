@@ -124,6 +124,20 @@ export const getPendingInvoice = () => {
     return request.get(`/bill/pendingReview`)
 }
 /**
+ * 根据id获取账单信息
+ * @param id 账单id
+ */
+export const getBillById = (id: string) => {
+    return request.get(`/bill/${id}`)
+}
+/**
+ * 更新账单信息
+ * @param data 对象，id：账单id，status：账单审核状态，remarks：账单备注
+ */
+export const updateBillInfo = (data: { id: string, status: number, remarks?: string }) => {
+    return request.put(`/bill`, data)
+}
+/**
  * 分页获取用户
  * @param currentPage 当前页
  * @param pageSize 每页显示的条数
@@ -131,3 +145,4 @@ export const getPendingInvoice = () => {
 export const getUser = (currentPage: number, pageSize: number) => {
     return request.get(`/user/${currentPage}/${pageSize}`)
 }
+

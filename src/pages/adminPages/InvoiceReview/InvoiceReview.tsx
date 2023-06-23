@@ -17,7 +17,11 @@ interface IData {
     type: string,
     createTime: string,
     updateTime: string,
-    user: { userName: string }
+    name:string,
+    teamName:string,
+    phone:string,
+    email:string,
+    userName:string
 }
 
 function InvoiceReview() {
@@ -67,7 +71,7 @@ function InvoiceReview() {
                 <Column title="编号" align="center" render={(_: any, _r: any, index: number): number => index + 1}/>
                 <Column title="发票用途" align="center" dataIndex="description" width={200} ellipsis/>
                 <Column title="发票金额" align="center" dataIndex="amount" render={value => `￥${value}`}/>
-                <Column title="提交人" align="center" dataIndex="user" render={value => value.userName}/>
+                <Column title="用户昵称" align="center" dataIndex="userName"/>
                 <Column title="状态" align="center" dataIndex="status"
                         render={value =>
                             <Tag color={value === 0 ? "warning" : value === 1 ? "success" : "error"}>
@@ -77,7 +81,7 @@ function InvoiceReview() {
                 <Column title="发票提交时间" align="center" dataIndex="createTime"/>
                 <Column title="操作" align="center" dataIndex="id"
                         render={id => <Button type="primary"
-                                              onClick={() => navigate(`pendingReview/${id}`)}>查看详情</Button>}
+                                              onClick={() => navigate(`ReviewDetail/${id}`)}>查看详情</Button>}
                 />
             </Table>
         </div>

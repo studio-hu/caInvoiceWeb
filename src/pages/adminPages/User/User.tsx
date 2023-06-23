@@ -31,7 +31,7 @@ function User() {
     const [data, setData] = useState<Array<IData>>([]);
     const [pagination, setPagination] = useState<IPagination>({
         current: 1,
-        pageSize: 1
+        pageSize: 10
     });
     useEffect(() => {
         getUserList()

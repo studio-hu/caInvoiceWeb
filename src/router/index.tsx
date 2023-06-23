@@ -2,7 +2,7 @@ import {lazy} from "react";
 import * as React from "react";
 import Loading from "../components/Loading/Loading.tsx";
 import NeedUserToken from "../components/NeedUserToken/NeedUserToken.tsx";
-import PendingReview from "../pages/adminPages/PendingReview/PendingReview.tsx";
+import ReviewDetail from "../pages/adminPages/ReviewDetail/ReviewDetail.tsx";
 
 const Container = lazy(() => import("../components/Container/Container.tsx"))
 const Login = lazy(() => import("../pages/Login/Login.tsx"))
@@ -12,7 +12,7 @@ const PersonalCenter = lazy(() => import("../pages/PersonalCenter/PersonalCenter
 const InvoiceForReimbursement = lazy(() => import("../pages/InvoiceForReimbursement/InvoiceForReimbursement.tsx"))
 const Admin = lazy(() => import("../components/Admin/Admin.tsx"))
 const Home = lazy(() => import("../pages/adminPages/Home/Home.tsx"))
-const InvoiceAll = lazy(() => import("../pages/adminPages/InvoiceList/InvoiceList.tsx"))
+const InvoiceList = lazy(() => import("../pages/adminPages/InvoiceList/InvoiceList.tsx"))
 const InvoiceReview = lazy(() => import("../pages/adminPages/InvoiceReview/InvoiceReview.tsx"))
 const User = lazy(() => import("../pages/adminPages/User/User.tsx"))
 const TagUser = lazy(() => import("../pages/adminPages/TagUser/TagUser.tsx"))
@@ -62,8 +62,17 @@ const routers: RoutersItems[] = [
                 element: <Home/>
             },
             {
-                path: "invoiceAll",
-                element: <InvoiceAll/>
+                path: "invoiceList",
+                children: [
+                    {
+                        index: true,
+                        element: <InvoiceList/>
+                    },
+                    {
+                        path:'ReviewDetail/:id',
+                        element:<ReviewDetail/>
+                    }
+                ]
             },
             {
                 path: "invoiceReview",
@@ -73,8 +82,8 @@ const routers: RoutersItems[] = [
                         element: <InvoiceReview/>
                     },
                     {
-                        path:'pendingReview/:id',
-                        element:<PendingReview/>
+                        path:'ReviewDetail/:id',
+                        element:<ReviewDetail/>
                     }
                 ]
             },

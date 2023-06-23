@@ -27,9 +27,17 @@ function Admin() {
     
     const defaultOpenKeys: string[] | any = () => {
         let path: string = location.pathname
+        // console.log(path)
+        // let number = path.indexOf("pendingReview");
+        // if(number!==-1){
+        //     path = path.slice(0,number+"pendingReview".length);
+        // }
+
+        // console.log(s)
         switch (path) {
-            case '/admin/invoiceAll':
+            case '/admin/invoiceList':
             case '/admin/invoiceReview':
+            case '/admin/invoiceReview/pendingReview':
                 setOpenKeys(['invoice'])
                 break
             case '/admin/tagUser':
@@ -95,9 +103,9 @@ function Admin() {
                                 label: '发票管理',
                                 children: [
                                     {
-                                        key: '/admin/invoiceAll',
+                                        key: '/admin/invoiceList',
                                         label: '全部发票',
-                                        onClick: () => navigate("invoiceAll")
+                                        onClick: () => navigate("invoiceList")
                                     },
                                     {
                                         key: '/admin/invoiceReview',
